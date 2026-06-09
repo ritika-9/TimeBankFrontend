@@ -1,0 +1,210 @@
+.welcome-banner {
+  background: linear-gradient(135deg, #6c63ff, #3f3d56);
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  margin-bottom: 32px;
+}
+
+.welcome-text h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: white;
+}
+
+.welcome-text p {
+  color: rgba(255,255,255,0.8);
+  margin-top: 4px;
+}
+
+.credit-display {
+  text-align: center;
+  background: rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 16px 24px;
+}
+
+.credit-amount {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.credit-label {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.action-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s;
+  border-left: 4px solid #6c63ff;
+  cursor: pointer;
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+}
+
+.action-card.session { border-left-color: #2ed573; }
+.action-card.profile { border-left-color: #ffa502; }
+
+.action-icon { font-size: 28px; }
+.action-title { font-weight: 600; color: #333; font-size: 16px; }
+.action-desc { font-size: 13px; color: #999; }
+
+.search-section {
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  display: flex;
+  gap: 12px;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-bar input:focus {
+  border-color: #6c63ff;
+}
+
+.category-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.cat-btn {
+  padding: 8px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 20px;
+  background: white;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cat-btn.active, .cat-btn:hover {
+  border-color: #6c63ff;
+  background: #6c63ff;
+  color: white;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.tabs button {
+  padding: 12px 24px;
+  border: none;
+  background: none;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #999;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+}
+
+.tabs button.active {
+  color: #6c63ff;
+  border-bottom-color: #6c63ff;
+}
+
+.request-card, .session-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.skill-tag {
+  background: #f0eeff;
+  color: #6c63ff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a2e;
+  line-height: 1.4;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  color: #888;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.applicants {
+  font-size: 12px;
+  color: #999;
+}
+
+.credits-badge {
+  background: #fff3cd;
+  color: #ffa502;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.btn-primary.small {
+  padding: 8px 16px;
+  font-size: 13px;
+}

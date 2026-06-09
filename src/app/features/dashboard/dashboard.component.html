@@ -1,0 +1,134 @@
+<p>dashboard works!</p>
+<app-navbar></app-navbar>
+
+<div class="container" style="padding-top: 32px;">
+
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    <div class="welcome-text">
+      <h1>Welcome back, {{currentUserName}} 👋</h1>
+      <p>Browse requests and sessions, or post your own</p>
+    </div>
+    <div class="credit-display" *ngIf="user">
+      <div class="credit-amount">{{user.credits}}</div>
+      <div class="credit-label">Time Credits</div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <a routerLink="/requests/create" class="action-card request">
+      <span class="action-icon">🙋</span>
+      <span class="action-title">Post a Request</span>
+      <span class="action-desc">Need help with something?</span>
+    </a>
+    <a routerLink="/sessions/create" class="action-card session">
+      <span class="action-icon">🎓</span>
+      <span class="action-title">Offer a Session</span>
+      <span class="action-desc">Share your expertise</span>
+    </a>
+    <a routerLink="/profile" class="action-card profile">
+      <span class="action-icon">👤</span>
+      <span class="action-title">My Profile</span>
+      <span class="action-desc">Manage skills & availability</span>
+    </a>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-section">
+    <div class="search-bar">
+      <input
+        type="text"
+        [(ngModel)]="searchKeyword"
+        placeholder="Search by skill, topic or keyword..."
+        (keyup.enter)="search()"
+      />
+      <button class="btn-primary" (click)="search()">Search</button>
+    </div>
+  </div>
+
+  <!-- Category Filter -->
+  <div class="category-filters">
+    <button
+      *ngFor="let cat of categories"
+      [class.active]="selectedCategory === cat || (cat === 'All' && !selectedCategory)"
+      (click)="filterByCategory(cat === 'All' ? '' : cat)"
+      class="cat-btn">
+      {{cat}}
+    </button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button
+      [class.active]="activeTab === 'requests'"
+      (click)="activeTab = 'requests'">
+      🙋 Help Requests ({{requests.length}})
+    </button>
+    <button
+      [class.active]="activeTab === 'sessions'"
+      (click)="activeTab = 'sessions'">
+      🎓 Sessions ({{sessions.length}})
+    </button>
+  </div>
+
+  <!-- Requests Feed -->
+  <div *ngIf="activeTab === 'requests'">
+    <div *ngIf="loading" class="loading">Loading requests...</div>
+    <div *ngIf="!loading && requests.length === 0" class="empty-state">
+      <h3>No open requests yet</h3>
+      <p>Be the first to post one!</p>
+      <br/>
+      <a routerLink="/requests/create" class="btn-primary">Post a Request</a>
+    </div>
+    <div class="grid-3">
+      <div class="card request-card" *ngFor="let req of requests">
+        <div class="card-top">
+          <span class="skill-tag">{{req.skillName}}</span>
+          <span class="badge badge-open">{{req.status}}</span>
+        </div>
+        <h3 class="card-title">{{req.title}}</h3>
+        <p class="card-desc">{{req.description}}</p>
+        <div class="card-meta">
+          <span>⏱ {{req.hoursRequired}} hrs</span>
+          <span>👤 {{req.createdByName}}</span>
+          <span>⭐ {{req.createdByRating | number:'1.1-1'}}</span>
+        </div>
+        <div class="card-footer">
+          <span class="applicants">{{req.applicantCount}} applicants</span>
+          <a [routerLink]="['/requests', req.id]" class="btn-primary small">View</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sessions Feed -->
+  <div *ngIf="activeTab === 'sessions'">
+    <div *ngIf="sessions.length === 0" class="empty-state">
+      <h3>No sessions available yet</h3>
+      <p>Be the first to offer one!</p>
+      <br/>
+      <a routerLink="/sessions/create" class="btn-primary">Offer a Session</a>
+    </div>
+    <div class="grid-3">
+      <div class="card session-card" *ngFor="let session of sessions">
+        <div class="card-top">
+          <span class="skill-tag">{{session.skillName}}</span>
+          <span class="badge badge-available">{{session.status}}</span>
+        </div>
+        <h3 class="card-title">{{session.title}}</h3>
+        <p class="card-desc">{{session.description}}</p>
+        <div class="card-meta">
+          <span>⏱ {{session.duration}} hrs</span>
+          <span>👤 {{session.offeredByName}}</span>
+          <span>⭐ {{session.offeredByRating | number:'1.1-1'}}</span>
+        </div>
+        <div class="card-footer">
+          <span class="credits-badge">{{session.credits}} credits</span>
+          <a [routerLink]="['/sessions', session.id]" class="btn-primary small">Book</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

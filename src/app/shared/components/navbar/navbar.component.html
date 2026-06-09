@@ -1,0 +1,17 @@
+<nav class="navbar">
+  <div class="nav-brand" routerLink="/dashboard">
+    ⏰ TimeBank
+  </div>
+  <div class="nav-links">
+    <a routerLink="/dashboard">Home</a>
+    <a routerLink="/requests">Requests</a>
+    <a routerLink="/sessions">Sessions</a>
+    <a routerLink="/profile">Profile</a>
+    <a routerLink="/notifications" class="notif-link">
+      🔔
+      <span class="badge-count" *ngIf="unreadCount > 0">{{unreadCount}}</span>
+    </a>
+    <span class="user-name">Hi, {{userName}}</span>
+    <button class="btn-logout" (click)="logout()">Logout</button>
+  </div>
+</nav>
