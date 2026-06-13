@@ -71,5 +71,19 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: '/dashboard'
-  }
+  },
+  {
+  path: 'notifications',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./features/notifications/notifications.component')
+      .then(m => m.NotificationsComponent)
+  },
+  {
+  path: 'sessions/:id',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./features/sessions/session-list/session-list.component')
+      .then(m => m.SessionListComponent)
+  },
 ];

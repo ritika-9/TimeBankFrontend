@@ -1,1 +1,149 @@
-<p>profile works!</p>
+<app-navbar></app-navbar>
+<div class="container" style="padding-top: 32px; max-width: 800px;">
+  <div class="page-header">
+    <h1>👤 My Profile</h1>
+    <p>Manage your skills and availability</p>
+  </div>
+
+  <div *ngIf="user">
+    <!-- Profile Completion -->
+    <div class="card completion-card">
+      <div class="completion-header">
+        <span>Profile Completion</span>
+        <span class="completion-pct">{{completionPercent}}%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="completionPercent"></div>
+      </div>
+      <p *ngIf="completionPercent < 100" class="completion-hint">
+        Complete your profile to get more matches!
+      </p>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value">{{user.credits}}</div>
+        <div class="stat-label">Available Credits</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{user.reservedCredits}}</div>
+        <div class="stat-label">Reserved Credits</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">⭐ {{user.rating | number:'1.1-1'}}</div>
+        <div class="stat-label">Your Rating</div>
+      </div>
+    </div>
+
+    <div class="alert-error" *ngIf="error">{{error}}</div>
+    <div class="alert-success" *ngIf="success">{{success}}</div>
+
+    <!-- Profile Info -->
+    <div class="card">
+      <div class="card-header-row">
+        <h2>Basic Info</h2>
+        <button class="btn-secondary small" (click)="editing = !editing">
+          {{editing ? 'Cancel' : 'Edit Profile'}}
+        </button>
+      </div>
+
+      <div *ngIf="!editing">
+        <p><strong>Name:</strong> {{user.name}}</p>
+        <p><strong>Email:</strong> {{user.email}}</p>
+        <p><strong>Bio:</strong> {{user.bio || 'No bio added yet'}}</p>
+      </div>
+
+      <div *ngIf="editing">
+        <div class="form-group">
+          <label>Bio</label>
+          <textarea [(ngModel)]="bio" rows="3" placeholder="Tell others about yourself..."></textarea>
+        </div>
+
+        <!-- Skills Offered -->
+        <div class="form-group">
+          <label>Skills I Can Offer</label>
+          <div class="skills-grid">
+            <div
+              class="skill-chip"
+              *ngFor="let skill of allSkills"
+              [class.selected]="selectedOfferedSkills.includes(skill.id)"
+              (click)="toggleSkillOffered(skill.id)">
+              {{skill.name}}
+            </div>
+          </div>
+        </div>
+
+        <!-- Skills Needed -->
+        <div class="form-group">
+          <label>Skills I Want to Learn</label>
+          <div class="skills-grid">
+            <div
+              class="skill-chip needed"
+              *ngFor="let skill of allSkills"
+              [class.selected]="selectedNeededSkills.includes(skill.id)"
+              (click)="toggleSkillNeeded(skill.id)">
+              {{skill.name}}
+            </div>
+          </div>
+        </div>
+
+        <!-- Availability -->
+        <div class="form-group">
+          <label>Available Days</label>
+          <div class="days-grid">
+            <div
+              class="day-chip"
+              *ngFor="let day of days"
+              [class.selected]="isDaySelected(day)"
+              (click)="toggleDay(day)">
+              {{day}}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Available Times</label>
+          <div class="days-grid">
+            <div
+              class="day-chip"
+              *ngFor="let time of times"
+              [class.selected]="isTimeSelected(time)"
+              (click)="toggleTime(time)">
+              {{time}}
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" (click)="saveProfile()" [disabled]="loading">
+          {{loading ? 'Saving...' : 'Save Profile'}}
+        </button>
+      </div>
+    </div>
+
+    <!-- Current Skills Display -->
+    <div class="card" *ngIf="!editing">
+      <h2>My Skills</h2>
+      <div *ngIf="user.skillsOffered && user.skillsOffered.length > 0">
+        <label>Offering:</label>
+        <div class="skills-display">
+          <span class="skill-tag offered" *ngFor="let skill of user.skillsOffered">
+            {{skill}}
+          </span>
+        </div>
+      </div>
+      <div *ngIf="user.skillsNeeded && user.skillsNeeded.length > 0" style="margin-top: 12px;">
+        <label>Wanting to Learn:</label>
+        <div class="skills-display">
+          <span class="skill-tag needed" *ngFor="let skill of user.skillsNeeded">
+            {{skill}}
+          </span>
+        </div>
+      </div>
+      <div *ngIf="user.availability">
+        <label style="margin-top: 12px; display:block;">Availability:</label>
+        <p style="color: #555; font-size: 14px;">{{user.availability}}</p>
+      </div>
+    </div>
+  </div>
+</div>

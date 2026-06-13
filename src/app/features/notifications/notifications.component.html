@@ -1,1 +1,28 @@
-<p>notifications works!</p>
+<app-navbar></app-navbar>
+<div class="container" style="padding-top: 32px; max-width: 700px;">
+  <div class="page-header">
+    <h1>🔔 Notifications</h1>
+    <p>Stay up to date with your requests and sessions</p>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+
+  <div *ngIf="!loading && notifications.length === 0" class="empty-state">
+    <h3>No notifications yet</h3>
+    <p>You'll see updates about your requests and sessions here</p>
+  </div>
+
+  <div class="notifications-list">
+    <div
+      class="notif-item card"
+      *ngFor="let notif of notifications"
+      [class.unread]="!notif.isRead">
+      <div class="notif-icon">{{getIcon(notif.type)}}</div>
+      <div class="notif-content">
+        <p>{{notif.message}}</p>
+        <span class="notif-time">{{notif.createdAt | date:'MMM d, h:mm a'}}</span>
+      </div>
+      <div class="unread-dot" *ngIf="!notif.isRead"></div>
+    </div>
+  </div>
+</div>

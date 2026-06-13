@@ -1,0 +1,36 @@
+.credit-guide {
+  background: #f0eeff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.credit-guide h4 { color: #6c63ff; margin-bottom: 12px; }
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.guide-item {
+  background: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.guide-range { font-weight: 600; color: #6c63ff; font-size: 13px; }
+.guide-desc { font-size: 12px; color: #888; }
+textarea { resize: vertical; min-height: 100px; }
+.add-skill-btn {
+  background: none;
+  border: none;
+  color: #6c63ff;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 8px;
+  padding: 0;
+}
+.inline-input { display: flex; gap: 8px; }
+.inline-input input { flex: 1; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px; }

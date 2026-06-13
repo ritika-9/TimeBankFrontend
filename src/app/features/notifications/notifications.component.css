@@ -1,0 +1,19 @@
+.notifications-list { display: flex; flex-direction: column; gap: 12px; }
+.notif-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  position: relative;
+}
+.notif-item.unread { border-left: 4px solid #6c63ff; }
+.notif-icon { font-size: 24px; }
+.notif-content { flex: 1; }
+.notif-content p { font-size: 14px; color: #333; margin-bottom: 4px; }
+.notif-time { font-size: 12px; color: #999; }
+.unread-dot {
+  width: 8px;
+  height: 8px;
+  background: #6c63ff;
+  border-radius: 50%;
+}

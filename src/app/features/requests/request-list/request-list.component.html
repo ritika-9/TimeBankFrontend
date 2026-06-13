@@ -1,1 +1,37 @@
-<p>request-list works!</p>
+<app-navbar></app-navbar>
+<div class="container" style="padding-top: 32px;">
+  <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+    <div>
+      <h1>My Requests</h1>
+      <p>Requests you have posted</p>
+    </div>
+    <a routerLink="/requests/create" class="btn-primary">+ Post New Request</a>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+
+  <div *ngIf="!loading && myRequests.length === 0" class="empty-state">
+    <h3>No requests yet</h3>
+    <p>Post your first help request!</p>
+    <br/>
+    <a routerLink="/requests/create" class="btn-primary">Post a Request</a>
+  </div>
+
+  <div class="requests-list">
+    <div class="card request-row" *ngFor="let req of myRequests">
+      <div class="row-left">
+        <span class="skill-tag">{{req.skillName}}</span>
+        <div>
+          <h3>{{req.title}}</h3>
+          <p>{{req.description}}</p>
+        </div>
+      </div>
+      <div class="row-right">
+        <span class="badge" [ngClass]="getStatusClass(req.status)">{{req.status}}</span>
+        <span class="hours">⏱ {{req.hoursRequired}} hrs</span>
+        <span class="applicants">👥 {{req.applicantCount}} applicants</span>
+        <a [routerLink]="['/requests', req.id]" class="btn-primary small">Manage</a>
+      </div>
+    </div>
+  </div>
+</div>

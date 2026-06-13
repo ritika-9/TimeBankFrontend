@@ -1,0 +1,56 @@
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #6c63ff;
+  text-decoration: none;
+  font-weight: 500;
+}
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.skill-tag {
+  background: #f0eeff;
+  color: #6c63ff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+.hours {
+  font-size: 18px;
+  font-weight: 700;
+  color: #6c63ff;
+}
+h1 { font-size: 24px; font-weight: 700; margin-bottom: 12px; color: #1a1a2e; }
+.description { color: #555; line-height: 1.6; margin-bottom: 20px; }
+.meta-row {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+h3 { font-size: 18px; margin-bottom: 12px; }
+textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: inherit; resize: vertical; outline: none; }
+textarea:focus { border-color: #6c63ff; }
+.applied-msg { background: #e3f9e5; color: #2ed573; padding: 16px; border-radius: 8px; font-weight: 500; }
+.accepted-banner {
+  background: #e3f9e5;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.applicants-section { margin-top: 32px; }
+.applicants-section h2 { margin-bottom: 16px; }
+.applicant-card { margin-bottom: 16px; }
+.applicant-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.applicant-msg { color: #666; font-size: 14px; margin-bottom: 12px; line-height: 1.5; }
+.creator-actions { display: flex; gap: 12px; }

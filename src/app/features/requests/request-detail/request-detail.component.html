@@ -1,1 +1,82 @@
-<p>request-detail works!</p>
+<app-navbar></app-navbar>
+<div class="container" style="padding-top: 32px; max-width: 800px;">
+  <a routerLink="/dashboard" class="back-link">← Back to Feed</a>
+
+  <div *ngIf="request" class="card request-detail">
+    <div class="detail-header">
+      <div>
+        <span class="skill-tag">{{request.skillName}}</span>
+        <span class="badge" [ngClass]="'badge-' + request.status.toLowerCase()">
+          {{request.status}}
+        </span>
+      </div>
+      <span class="hours">⏱ {{request.hoursRequired}} credits</span>
+    </div>
+
+    <h1>{{request.title}}</h1>
+    <p class="description">{{request.description}}</p>
+
+    <div class="meta-row">
+      <span>👤 Posted by <strong>{{request.createdByName}}</strong></span>
+      <span>⭐ {{request.createdByRating | number:'1.1-1'}}</span>
+      <span>👥 {{request.applicantCount}} applicants</span>
+    </div>
+
+    <div class="alert-error" *ngIf="error">{{error}}</div>
+    <div class="alert-success" *ngIf="success">{{success}}</div>
+
+    <!-- Actions for NON-creator -->
+    <div *ngIf="!isCreator && request.status === 'OPEN'">
+      <div *ngIf="!hasApplied">
+        <h3>Apply to Help</h3>
+        <div class="form-group">
+          <textarea
+            [(ngModel)]="applyMessage"
+            rows="3"
+            placeholder="Tell them why you're the right person to help...">
+          </textarea>
+        </div>
+        <button class="btn-primary" (click)="applyToRequest()" [disabled]="loading">
+          {{loading ? 'Applying...' : 'Apply Now'}}
+        </button>
+      </div>
+      <div *ngIf="hasApplied" class="applied-msg">
+        ✅ You have applied! Wait for the creator to review your application.
+      </div>
+    </div>
+
+    <!-- Actions for CREATOR -->
+    <div *ngIf="isCreator">
+      <div *ngIf="request.status === 'ACCEPTED'" class="accepted-banner">
+        ✅ Accepted: <strong>{{request.acceptedByName}}</strong> is helping you.
+        <button class="btn-success" (click)="completeRequest()">Mark Complete</button>
+      </div>
+      <div *ngIf="request.status === 'OPEN'" class="creator-actions">
+        <button class="btn-danger" (click)="cancelRequest()">Cancel Request</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Applicants list (only creator sees this) -->
+  <div *ngIf="isCreator && applicants.length > 0" class="applicants-section">
+    <h2>Applicants ({{applicants.length}})</h2>
+    <div class="card applicant-card" *ngFor="let app of applicants">
+      <div class="applicant-header">
+        <div>
+          <strong>{{app.applicantName}}</strong>
+          <span class="stars"> ⭐ {{app.applicantRating | number:'1.1-1'}}</span>
+        </div>
+        <span class="badge" [ngClass]="'badge-' + app.status.toLowerCase()">
+          {{app.status}}
+        </span>
+      </div>
+      <p class="applicant-msg">{{app.message}}</p>
+      <button
+        *ngIf="app.status === 'PENDING' && request?.status === 'OPEN'"
+        class="btn-primary"
+        (click)="acceptApplicant(app.applicantId)">
+        Accept
+      </button>
+    </div>
+  </div>
+</div>
