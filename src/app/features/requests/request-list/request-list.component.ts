@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,13 +17,23 @@ export class RequestListComponent implements OnInit {
   myRequests: HelpRequest[] = [];
   loading = false;
 
-  constructor(private requestService: RequestService) {}
+  constructor(
+    private requestService: RequestService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loading = true;
     this.requestService.getMyRequests().subscribe({
-      next: (data) => { this.myRequests = data; this.loading = false; },
-      error: () => this.loading = false
+      next: (data) => {
+        this.myRequests = data;
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 

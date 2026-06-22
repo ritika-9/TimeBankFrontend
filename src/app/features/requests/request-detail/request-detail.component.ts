@@ -6,6 +6,7 @@ import { NavbarComponent } from '../../../shared/components/navbar/navbar.compon
 import { RequestService } from '../../../core/services/request.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { HelpRequest, Application } from '../../../core/models/request.model';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-request-detail',
@@ -20,32 +21,38 @@ export class RequestDetailComponent implements OnInit {
   applyMessage = '';
   error = '';
   success = '';
-  loading = false;
-  currentUserEmail = '';
+  loading = true;
+  currentUserName = '';
   hasApplied = false;
+  aiTip = '';
 
   constructor(
     private route: ActivatedRoute,
     private requestService: RequestService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private http:HttpClient
   ) {}
 
   ngOnInit(): void {
-    this.currentUserEmail = this.authService.getCurrentUser()?.email || '';
+    this.currentUserName = this.authService.getCurrentUser()?.name || '';
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.loadRequest(id);
   }
 
   loadRequest(id: number): void {
-    this.requestService.getAllOpenRequests().subscribe({
-      next: (requests) => {
-        this.request = requests.find(r => r.id === id) || null;
-        if (this.request && this.isCreator) {
+    this.loading = true;
+    this.requestService.getRequestById(id).subscribe({
+      next: (request) => {
+        this.request = request;
+        this.loading = false;
+        if (this.isCreator) {
           this.loadApplicants(id);
         }
-      }
+      },
+      error: () => this.loading = false
     });
+    this.loadAiTip()
   }
 
   loadApplicants(id: number): void {
@@ -55,7 +62,7 @@ export class RequestDetailComponent implements OnInit {
   }
 
   get isCreator(): boolean {
-    return this.request?.createdByName === this.authService.getCurrentUser()?.name;
+    return this.request?.createdByName === this.currentUserName;
   }
 
   applyToRequest(): void {
@@ -63,17 +70,12 @@ export class RequestDetailComponent implements OnInit {
       this.error = 'Please write a message';
       return;
     }
-    this.loading = true;
     this.requestService.applyToRequest(this.request!.id, this.applyMessage).subscribe({
       next: () => {
-        this.success = 'Application sent successfully!';
+        this.success = 'Application sent!';
         this.hasApplied = true;
-        this.loading = false;
       },
-      error: (err) => {
-        this.error = err.error?.message || 'Failed to apply';
-        this.loading = false;
-      }
+      error: (err) => this.error = err.error?.message || 'Failed to apply'
     });
   }
 
@@ -89,10 +91,7 @@ export class RequestDetailComponent implements OnInit {
 
   completeRequest(): void {
     this.requestService.completeRequest(this.request!.id).subscribe({
-      next: () => {
-        this.success = 'Request completed! Credits transferred.';
-        this.router.navigate(['/dashboard']);
-      },
+      next: () => this.router.navigate(['/dashboard']),
       error: (err) => this.error = err.error?.message || 'Failed to complete'
     });
   }
@@ -103,4 +102,27 @@ export class RequestDetailComponent implements OnInit {
       error: (err) => this.error = err.error?.message || 'Failed to cancel'
     });
   }
+
+  goToChat(): void {
+    this.router.navigate(['/chat'], {
+      queryParams: {
+        type: 'request',
+        id: this.request!.id,
+        with: this.isCreator ? this.request!.acceptedByName : this.request!.createdByName
+      }
+    });
+  }
+
+  
+
+loadAiTip(): void {
+  if (!this.request) return;
+  this.http.post<any>('http://localhost:8080/api/ai/match-helpers', {
+    title: this.request.title,
+    skillName: this.request.skillName
+  }).subscribe({
+    next: (res) => this.aiTip = res.tip,
+    error: () => {}
+  });
+}
 }

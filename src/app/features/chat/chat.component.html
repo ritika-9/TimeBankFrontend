@@ -1,1 +1,58 @@
-<p>chat works!</p>
+<app-navbar></app-navbar>
+<div class="chat-page">
+  <div class="chat-container">
+
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <a [routerLink]="roomType === 'SESSION' ? '/sessions' : '/requests'"
+         class="back-btn">←</a>
+      <div class="chat-info">
+        <h3>💬 Chat with {{chatWith}}</h3>
+        <span class="chat-subtitle">
+          {{roomType === 'SESSION' ? 'Session' : 'Help Request'}} #{{referenceId}}
+        </span>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="messages-container" #messageContainer>
+      <div *ngIf="loading" class="loading">Loading messages...</div>
+
+      <div *ngIf="!loading && messages.length === 0" class="empty-chat">
+        <p>👋 Start the conversation!</p>
+        <p class="hint">Messages are only visible to participants</p>
+      </div>
+
+      <div
+        *ngFor="let msg of messages"
+        class="message-wrapper"
+        [class.mine]="isMyMessage(msg)">
+        <div class="message" [class.my-message]="isMyMessage(msg)">
+          <span class="sender-name" *ngIf="!isMyMessage(msg)">
+            {{msg.senderName}}
+          </span>
+          <p class="message-content">{{msg.content}}</p>
+          <span class="message-time">
+            {{msg.sentAt | date:'h:mm a'}}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-area">
+      <textarea
+        [(ngModel)]="newMessage"
+        (keydown)="onEnter($event)"
+        placeholder="Type a message... (Enter to send)"
+        rows="1">
+      </textarea>
+      <button
+        class="send-btn"
+        (click)="sendMessage()"
+        [disabled]="!newMessage.trim()">
+        ➤
+      </button>
+    </div>
+  </div>
+</div>

@@ -3,36 +3,83 @@
   <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
     <div>
       <h1>Sessions</h1>
-      <p>Browse available sessions</p>
+      <p>Browse or manage sessions</p>
     </div>
     <a routerLink="/sessions/create" class="btn-primary">+ Offer Session</a>
   </div>
 
-  <div *ngIf="loading" class="loading">Loading sessions...</div>
-
-  <div *ngIf="!loading && mySessions.length === 0" class="empty-state">
-    <h3>No sessions available</h3>
-    <p>Be the first to offer one!</p>
-    <br/>
-    <a routerLink="/sessions/create" class="btn-primary">Offer a Session</a>
+  <!-- Search -->
+  <div class="search-bar" style="margin-bottom: 24px;">
+    <input type="text" [(ngModel)]="searchKeyword"
+      placeholder="Search sessions..."
+      (keyup.enter)="search()"/>
+    <button class="btn-primary" (click)="search()">Search</button>
   </div>
 
-  <div class="grid-3">
-    <div class="card session-card" *ngFor="let session of mySessions">
-      <div class="card-top">
-        <span class="skill-tag">{{session.skillName}}</span>
-        <span class="credits-badge">{{session.credits}} credits</span>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button [class.active]="activeTab === 'all'" (click)="activeTab = 'all'">
+      All Sessions ({{allSessions.length}})
+    </button>
+    <button [class.active]="activeTab === 'mine'" (click)="activeTab = 'mine'">
+      My Sessions ({{mySessions.length}})
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+
+  <!-- All Sessions -->
+  <div *ngIf="activeTab === 'all' && !loading">
+    <div *ngIf="allSessions.length === 0" class="empty-state">
+      <h3>No sessions available</h3>
+      <p>Be the first to offer one!</p>
+      <br/>
+      <a routerLink="/sessions/create" class="btn-primary">Offer a Session</a>
+    </div>
+    <div class="grid-3">
+      <div class="card session-card" *ngFor="let session of allSessions">
+        <div class="card-top">
+          <span class="skill-tag">{{session.skillName}}</span>
+          <span class="credits-badge">{{session.credits}} credits</span>
+        </div>
+        <h3>{{session.title}}</h3>
+        <p class="desc">{{session.description}}</p>
+        <div class="meta">
+          <span>⏱ {{session.duration}} hrs</span>
+          <span>👤 {{session.offeredByName}}</span>
+          <span>⭐ {{session.offeredByRating | number:'1.1-1'}}</span>
+        </div>
+        <div class="card-footer">
+          <span class="badge badge-available">{{session.status}}</span>
+          <a [routerLink]="['/sessions', session.id]" class="btn-primary small">View</a>
+        </div>
       </div>
-      <h3>{{session.title}}</h3>
-      <p class="desc">{{session.description}}</p>
-      <div class="meta">
-        <span>⏱ {{session.duration}} hrs</span>
-        <span>👤 {{session.offeredByName}}</span>
-        <span>⭐ {{session.offeredByRating | number:'1.1-1'}}</span>
-      </div>
-      <div class="card-footer">
-        <span class="badge badge-available">{{session.status}}</span>
-        <a [routerLink]="['/sessions', session.id]" class="btn-primary small">View</a>
+    </div>
+  </div>
+
+  <!-- My Sessions -->
+  <div *ngIf="activeTab === 'mine' && !loading">
+    <div *ngIf="mySessions.length === 0" class="empty-state">
+      <h3>You haven't offered any sessions yet</h3>
+      <br/>
+      <a routerLink="/sessions/create" class="btn-primary">Offer Your First Session</a>
+    </div>
+    <div class="sessions-list">
+      <div class="card session-row" *ngFor="let session of mySessions">
+        <div class="row-left">
+          <span class="skill-tag">{{session.skillName}}</span>
+          <div>
+            <h3>{{session.title}}</h3>
+            <p>{{session.description}}</p>
+          </div>
+        </div>
+        <div class="row-right">
+          <span class="badge" [ngClass]="'badge-' + session.status.toLowerCase()">
+            {{session.status}}
+          </span>
+          <span class="credits-badge">{{session.credits}} credits</span>
+          <a [routerLink]="['/sessions', session.id]" class="btn-primary small">Manage</a>
+        </div>
       </div>
     </div>
   </div>

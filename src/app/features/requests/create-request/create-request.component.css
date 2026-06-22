@@ -28,3 +28,13 @@ small {
   gap: 12px;
   margin-top: 8px;
 }
+.ai-btn {
+  background: linear-gradient(135deg, #6c63ff, #a855f7);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 8px;
+}

@@ -1,0 +1,83 @@
+<app-navbar></app-navbar>
+<div class="container" style="padding-top: 32px; max-width: 800px;">
+  <a routerLink="/sessions" class="back-link">← Back to Sessions</a>
+
+  <div *ngIf="session" class="card session-detail">
+    <div class="detail-header">
+      <div class="tags">
+        <span class="skill-tag">{{session.skillName}}</span>
+        <span class="badge" [ngClass]="'badge-' + session.status.toLowerCase()">
+          {{session.status}}
+        </span>
+      </div>
+      <span class="credits-display">{{session.credits}} credits</span>
+    </div>
+
+    <h1>{{session.title}}</h1>
+    <p class="description">{{session.description}}</p>
+
+    <div class="meta-row">
+      <span>👤 Offered by <strong>{{session.offeredByName}}</strong></span>
+      <span>⭐ {{session.offeredByRating | number:'1.1-1'}}</span>
+      <span>⏱ {{session.duration}} hours</span>
+    </div>
+
+    <!-- Scheduled time if booked -->
+    <div class="scheduled-banner" *ngIf="session.scheduledTime">
+      📅 Scheduled for: <strong>{{session.scheduledTime | date:'MMM d, yyyy h:mm a'}}</strong>
+      <a [href]="getMeetLink()" target="_blank" class="meet-link">
+        🎥 Join Google Meet
+      </a>
+    </div>
+
+    <div class="alert-error" *ngIf="error">{{error}}</div>
+    <div class="alert-success" *ngIf="success">{{success}}</div>
+
+    <!-- OWNER ACTIONS -->
+    <div *ngIf="isOwner" class="actions-section">
+      <div *ngIf="session.status === 'AVAILABLE' && session.bookedByName" class="pending-booking">
+        <p>📬 <strong>{{session.bookedByName}}</strong> wants to book this session!</p>
+        <div class="form-group">
+          <label>Confirm a Date & Time</label>
+          <input type="datetime-local" [(ngModel)]="scheduledTime"/>
+        </div>
+        <button class="btn-primary" (click)="confirmBooking()" [disabled]="loading">
+          {{loading ? 'Confirming...' : 'Confirm Booking'}}
+        </button>
+      </div>
+
+      <div *ngIf="isBooked" class="booked-actions">
+        <p>✅ Session booked with <strong>{{session.bookedByName}}</strong></p>
+        <div class="action-buttons">
+          <button class="btn-primary" (click)="goToChat()">💬 Open Chat</button>
+          <button class="btn-success" (click)="completeSession()">Mark Complete</button>
+        </div>
+      </div>
+
+      <div *ngIf="session.status === 'AVAILABLE' && !session.bookedByName">
+        <p class="waiting-msg">⏳ Waiting for someone to book this session...</p>
+      </div>
+    </div>
+
+    <!-- STUDENT ACTIONS (not owner) -->
+    <div *ngIf="!isOwner" class="actions-section">
+      <div *ngIf="session.status === 'AVAILABLE'">
+        <button class="btn-primary large" (click)="bookSession()" [disabled]="booking">
+          {{booking ? 'Sending request...' : '📅 Request to Book'}}
+        </button>
+        <p class="book-note">
+          {{session.credits}} credits will be reserved until the session is confirmed.
+        </p>
+      </div>
+
+      <div *ngIf="isBooked && session.bookedByName === currentUserName">
+        <p class="booked-msg">✅ You've booked this session!</p>
+        <button class="btn-primary" (click)="goToChat()">💬 Open Chat</button>
+      </div>
+
+      <div *ngIf="isCompleted" class="completed-msg">
+        🎉 This session has been completed!
+      </div>
+    </div>
+  </div>
+</div>

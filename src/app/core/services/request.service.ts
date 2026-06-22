@@ -47,4 +47,8 @@ export class RequestService {
   cancelRequest(requestId: number): Observable<HelpRequest> {
     return this.http.put<HelpRequest>(`${this.apiUrl}/${requestId}/cancel`, {});
   }
+
+  getRequestById(id: number): Observable<HelpRequest> {
+  return this.http.get<HelpRequest>(`${this.apiUrl}/${id}`);
+  }
 }

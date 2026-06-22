@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
@@ -33,13 +33,17 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private skillService: SkillService
+    private skillService: SkillService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loadProfile();
     this.skillService.getAllSkills().subscribe({
-      next: (skills) => this.allSkills = skills
+      next: (skills) => {
+        this.allSkills = skills;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -53,6 +57,7 @@ export class ProfileComponent implements OnInit {
           this.selectedDays = parts[0] ? parts[0].split(',') : [];
           this.selectedTimes = parts[1] ? parts[1].split(',') : [];
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -104,10 +109,12 @@ export class ProfileComponent implements OnInit {
         this.success = 'Profile updated successfully!';
         this.editing = false;
         this.loading = false;
+        this.cdr.markForCheck();
       },
-      error: (err) => {
+      error: () => {
         this.error = 'Failed to update profile';
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }

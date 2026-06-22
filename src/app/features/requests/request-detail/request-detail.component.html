@@ -2,7 +2,9 @@
 <div class="container" style="padding-top: 32px; max-width: 800px;">
   <a routerLink="/dashboard" class="back-link">← Back to Feed</a>
 
-  <div *ngIf="request" class="card request-detail">
+  <div *ngIf="loading" class="loading">Loading...</div>
+
+  <div *ngIf="!loading && request" class="card request-detail">
     <div class="detail-header">
       <div>
         <span class="skill-tag">{{request.skillName}}</span>
@@ -20,36 +22,44 @@
       <span>👤 Posted by <strong>{{request.createdByName}}</strong></span>
       <span>⭐ {{request.createdByRating | number:'1.1-1'}}</span>
       <span>👥 {{request.applicantCount}} applicants</span>
-    </div>
-
+      </div>
+      <div class="ai-tip" *ngIf="aiTip">
+        <span class="ai-label">✨ AI Tip</span>
+        <p>{{aiTip}}</p>
+      </div>
+      
     <div class="alert-error" *ngIf="error">{{error}}</div>
     <div class="alert-success" *ngIf="success">{{success}}</div>
 
-    <!-- Actions for NON-creator -->
-    <div *ngIf="!isCreator && request.status === 'OPEN'">
-      <div *ngIf="!hasApplied">
+    <!-- NON-CREATOR ACTIONS -->
+    <div *ngIf="!isCreator">
+      <div *ngIf="request.status === 'OPEN' && !hasApplied">
         <h3>Apply to Help</h3>
         <div class="form-group">
           <textarea
             [(ngModel)]="applyMessage"
             rows="3"
-            placeholder="Tell them why you're the right person to help...">
+            placeholder="Tell them why you're the right person...">
           </textarea>
         </div>
-        <button class="btn-primary" (click)="applyToRequest()" [disabled]="loading">
-          {{loading ? 'Applying...' : 'Apply Now'}}
-        </button>
+        <button class="btn-primary" (click)="applyToRequest()">Apply Now</button>
       </div>
       <div *ngIf="hasApplied" class="applied-msg">
-        ✅ You have applied! Wait for the creator to review your application.
+        ✅ Application sent! Wait for the creator to review.
+      </div>
+      <div *ngIf="request.status === 'ACCEPTED' && request.acceptedByName === currentUserName">
+        <button class="btn-primary" (click)="goToChat()">💬 Open Chat</button>
       </div>
     </div>
 
-    <!-- Actions for CREATOR -->
+    <!-- CREATOR ACTIONS -->
     <div *ngIf="isCreator">
       <div *ngIf="request.status === 'ACCEPTED'" class="accepted-banner">
-        ✅ Accepted: <strong>{{request.acceptedByName}}</strong> is helping you.
-        <button class="btn-success" (click)="completeRequest()">Mark Complete</button>
+        <span>✅ <strong>{{request.acceptedByName}}</strong> is helping you</span>
+        <div class="action-buttons">
+          <button class="btn-primary" (click)="goToChat()">💬 Chat</button>
+          <button class="btn-success" (click)="completeRequest()">Mark Complete</button>
+        </div>
       </div>
       <div *ngIf="request.status === 'OPEN'" class="creator-actions">
         <button class="btn-danger" (click)="cancelRequest()">Cancel Request</button>
@@ -57,7 +67,7 @@
     </div>
   </div>
 
-  <!-- Applicants list (only creator sees this) -->
+  <!-- Applicants -->
   <div *ngIf="isCreator && applicants.length > 0" class="applicants-section">
     <h2>Applicants ({{applicants.length}})</h2>
     <div class="card applicant-card" *ngFor="let app of applicants">

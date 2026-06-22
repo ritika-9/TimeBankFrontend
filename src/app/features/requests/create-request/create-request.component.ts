@@ -6,6 +6,7 @@ import { NavbarComponent } from '../../../shared/components/navbar/navbar.compon
 import { RequestService } from '../../../core/services/request.service';
 import { SkillService } from '../../../core/services/skill.service';
 import { Skill } from '../../../core/models/skill.model';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-create-request',
@@ -25,11 +26,13 @@ export class CreateRequestComponent implements OnInit {
   success = '';
   loading = false;
   showNewSkill = false;
+  generatingDesc = false;
 
   constructor(
     private requestService: RequestService,
     private skillService: SkillService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -70,4 +73,22 @@ export class CreateRequestComponent implements OnInit {
       }
     });
   }
+
+  generateDescription(): void {
+  if (!this.title) {
+    this.error = 'Enter a title first';
+    return;
+  }
+  this.generatingDesc = true;
+  this.http.post<any>('http://localhost:8080/api/ai/generate-description', {
+    title: this.title,
+    skillName: this.skills.find(s => s.id === this.skillId)?.name || ''
+  }).subscribe({
+    next: (res) => {
+      this.description = res.description;
+      this.generatingDesc = false;
+    },
+    error: () => this.generatingDesc = false
+  });
+}
 }

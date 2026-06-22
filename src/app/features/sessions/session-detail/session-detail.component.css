@@ -1,0 +1,95 @@
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #6c63ff;
+  text-decoration: none;
+  font-weight: 500;
+}
+.session-detail { padding: 32px; }
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.tags { display: flex; gap: 8px; align-items: center; }
+.skill-tag {
+  background: #f0eeff;
+  color: #6c63ff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.credits-display {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffa502;
+}
+h1 { font-size: 24px; font-weight: 700; margin-bottom: 12px; color: #1a1a2e; }
+.description { color: #555; line-height: 1.6; margin-bottom: 20px; }
+.meta-row {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  color: #888;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 24px;
+}
+.scheduled-banner {
+  background: #e8f4fd;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+.meet-link {
+  background: #1e90ff;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+.actions-section { margin-top: 8px; }
+.pending-booking {
+  background: #fff3cd;
+  padding: 20px;
+  border-radius: 12px;
+}
+.pending-booking p { margin-bottom: 16px; }
+input[type="datetime-local"] {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  outline: none;
+}
+input[type="datetime-local"]:focus { border-color: #6c63ff; }
+.booked-actions { display: flex; flex-direction: column; gap: 12px; }
+.action-buttons { display: flex; gap: 12px; }
+.waiting-msg { color: #999; font-style: italic; }
+.btn-primary.large { padding: 14px 32px; font-size: 16px; }
+.book-note { font-size: 13px; color: #999; margin-top: 8px; }
+.booked-msg {
+  background: #e3f9e5;
+  color: #2ed573;
+  padding: 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.completed-msg {
+  background: #e8f4fd;
+  color: #1e90ff;
+  padding: 16px;
+  border-radius: 8px;
+  font-weight: 500;
+}

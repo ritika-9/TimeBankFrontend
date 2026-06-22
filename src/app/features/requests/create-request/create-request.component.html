@@ -13,6 +13,9 @@
     <div class="form-group">
       <label>Description</label>
       <textarea [(ngModel)]="description" rows="4" placeholder="Describe what you need in detail..."></textarea>
+      <button class="ai-btn" (click)="generateDescription()" [disabled]="generatingDesc">
+  {{generatingDesc ? '✨ Generating...' : '✨ Generate with AI'}}
+</button>
     </div>
     <div class="form-group">
       <label>Skill Needed *</label>

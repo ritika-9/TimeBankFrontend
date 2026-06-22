@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, RouterLink, NavbarComponent, FormsModule],
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
   requests: HelpRequest[] = [];
@@ -33,7 +33,8 @@ export class DashboardComponent implements OnInit {
     private requestService: RequestService,
     private sessionService: SessionService,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -44,22 +45,38 @@ export class DashboardComponent implements OnInit {
 
   loadProfile(): void {
     this.userService.getProfile().subscribe({
-      next: (user) => this.user = user
+      next: (user) => {
+        this.user = user;
+        this.cdr.markForCheck();
+      },
     });
   }
 
   loadRequests(): void {
     this.loading = true;
     const category = this.selectedCategory === 'All' ? '' : this.selectedCategory;
-    this.requestService.getAllOpenRequests(this.searchKeyword, category).subscribe({
-      next: (data) => { this.requests = data; this.loading = false; },
-      error: () => this.loading = false
-    });
+    this.requestService
+      .getAllOpenRequests(this.searchKeyword || undefined, category || undefined)
+      .subscribe({
+        next: (data) => {
+          this.requests = data;
+          this.loading = false;
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          this.loading = false;
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   loadSessions(): void {
-    this.sessionService.getAllSessions(this.searchKeyword).subscribe({
-      next: (data) => this.sessions = data
+    this.sessionService.getAllSessions(this.searchKeyword || undefined).subscribe({
+      next: (data) => {
+        this.sessions = data;
+        this.cdr.markForCheck();
+      },
+      error: () => this.cdr.markForCheck(),
     });
   }
 
