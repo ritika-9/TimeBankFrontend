@@ -96,7 +96,9 @@
         </div>
         <div class="card-footer">
           <span class="applicants">{{req.applicantCount}} applicants</span>
-          <a [routerLink]="['/requests', req.id]" class="btn-primary small">View</a>
+          <div style="display:flex; gap:8px;">
+            <a [routerLink]="['/requests', req.id]" class="btn-primary small">View</a>
+          </div>
         </div>
       </div>
     </div>

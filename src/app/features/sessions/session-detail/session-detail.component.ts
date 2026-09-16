@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -22,13 +22,15 @@ export class SessionDetailComponent implements OnInit {
   booking = false;
   scheduledTime = '';
   currentUserName = '';
+  hasRequested = false;
   
 
   constructor(
     private route: ActivatedRoute,
     private sessionService: SessionService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -43,8 +45,12 @@ export class SessionDetailComponent implements OnInit {
     next: (session) => {
       this.session = session;
       this.loading = false;
+      this.cdr.markForCheck();
     },
-    error: () => this.loading = false
+    error: () => {
+      this.loading = false;
+      this.cdr.markForCheck();
+    }
   });
 }
 
@@ -62,24 +68,33 @@ export class SessionDetailComponent implements OnInit {
   }
 
   bookSession(): void {
-    if (!this.session) return;
-    this.booking = true;
-    this.sessionService.requestBooking(this.session.id).subscribe({
-      next: () => {
-        this.success = 'Booking request sent! Wait for the poster to confirm.';
-        this.booking = false;
-        this.loadSession(this.session!.id);
-      },
-      error: (err) => {
-        this.error = err.error?.message || 'Failed to book session';
-        this.booking = false;
+  if (!this.session || this.hasRequested) return;
+  this.booking = true;
+  this.error = '';
+  this.sessionService.requestBooking(this.session.id).subscribe({
+    next: () => {
+      this.success = 'Booking request sent! Wait for the poster to confirm.';
+      this.booking = false;
+      this.hasRequested = true;
+      this.loadSession(this.session!.id);
+    },
+    error: (err) => {
+      this.error = err.error?.message || 'Failed to book session';
+      this.booking = false;
+      // if already requested, backend throws error — catch it here
+      if (err.error?.message?.includes('already') ||
+          err.status === 400) {
+        this.hasRequested = true;
+        this.error = 'You have already requested to book this session!';
       }
-    });
-  }
+    }
+  });
+}
 
   confirmBooking(): void {
     if (!this.scheduledTime) {
       this.error = 'Please select a date and time';
+      this.cdr.markForCheck();
       return;
     }
     this.loading = true;
@@ -89,11 +104,13 @@ export class SessionDetailComponent implements OnInit {
       next: () => {
         this.success = 'Booking confirmed! Chat is now open.';
         this.loading = false;
+        this.cdr.markForCheck();
         this.loadSession(this.session!.id);
       },
       error: (err) => {
         this.error = err.error?.message || 'Failed to confirm booking';
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -102,20 +119,44 @@ export class SessionDetailComponent implements OnInit {
     this.sessionService.completeSession(this.session!.id).subscribe({
       next: () => {
         this.success = 'Session completed! Credits transferred.';
+        this.cdr.markForCheck();
         setTimeout(() => this.router.navigate(['/dashboard']), 1500);
       },
-      error: (err) => this.error = err.error?.message || 'Failed to complete'
+      error: (err) => {
+        this.error = err.error?.message || 'Failed to complete';
+        this.cdr.markForCheck();
+      }
     });
   }
 
   goToChat(): void {
-    this.router.navigate(['/chat'], {
-      queryParams: {
-        type: 'session',
-        id: this.session!.id,
-        with: this.isOwner ? this.session!.bookedByName : this.session!.offeredByName
-      }
-    });
+  console.log('goToChat called', {
+    type: 'session',
+    id: this.session!.id,
+    with: this.isOwner
+      ? this.session!.bookedByName
+      : this.session!.offeredByName
+  });
+
+  this.router.navigate(['/chat'], {
+    queryParams: {
+      type: 'session',
+      id: this.session!.id,
+      with: this.isOwner
+        ? this.session!.bookedByName
+        : this.session!.offeredByName
+    }
+  }).then(success => {
+    console.log('Navigation result:', success);
+  }).catch(err => {
+    console.error('Navigation error:', err);
+  });
+}
+
+  get chatPartnerName(): string {
+    return this.isOwner
+      ? this.session?.bookedByName || 'User'
+      : this.session?.offeredByName || 'User';
   }
 
   getMeetLink(): string {

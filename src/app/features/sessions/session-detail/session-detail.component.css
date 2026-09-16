@@ -93,3 +93,12 @@ input[type="datetime-local"]:focus { border-color: #6c63ff; }
   border-radius: 8px;
   font-weight: 500;
 }
+
+.already-requested {
+  background: #fff3cd;
+  color: #856404;
+  padding: 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+}

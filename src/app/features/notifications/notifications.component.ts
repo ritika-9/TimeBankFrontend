@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { NotificationService } from '../../core/services/notification.service';
@@ -15,7 +15,10 @@ export class NotificationsComponent implements OnInit {
   notifications: Notification[] = [];
   loading = false;
 
-  constructor(private notificationService: NotificationService) {}
+  constructor(
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loading = true;
@@ -23,9 +26,16 @@ export class NotificationsComponent implements OnInit {
       next: (data) => {
         this.notifications = data;
         this.loading = false;
-        this.notificationService.markAllAsRead().subscribe();
+        this.cdr.markForCheck();
+        this.notificationService.markAllAsRead().subscribe({
+          next: () => this.cdr.markForCheck(),
+          error: () => this.cdr.markForCheck()
+        });
       },
-      error: () => this.loading = false
+      error: () => {
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
   getIcon(type: string): string {

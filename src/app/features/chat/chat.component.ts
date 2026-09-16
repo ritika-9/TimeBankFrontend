@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, OnDestroy,
+  ChangeDetectorRef, Component, OnInit, OnDestroy,
   ViewChild, ElementRef, AfterViewChecked
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -35,7 +35,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   constructor(
     private route: ActivatedRoute,
     private chatService: ChatService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -44,18 +45,27 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.roomType = (params['type'] || 'request').toUpperCase();
       this.referenceId = Number(params['id']);
       this.chatWith = params['with'] || 'User';
+      this.loading = true;
       this.initChat();
+      this.cdr.markForCheck();
     });
   }
 
   initChat(): void {
+    this.subscription?.unsubscribe();
+    this.chatService.disconnect();
+
     this.chatService.getChatHistory(this.roomType, this.referenceId).subscribe({
       next: (messages) => {
         this.messages = messages;
         this.loading = false;
         this.shouldScroll = true;
+        this.cdr.markForCheck();
       },
-      error: () => this.loading = false
+      error: () => {
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
     });
 
     // ⭐ INTERVIEW: WebSocket connection — subscribe to real time messages
@@ -75,9 +85,11 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.messages.push(message);
         }
         this.shouldScroll = true;
+        this.cdr.markForCheck();
       });
 
     this.connected = true;
+    this.cdr.markForCheck();
   }
 
   sendMessage(): void {
@@ -98,6 +110,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     this.shouldScroll = true;
     this.newMessage = '';
+    this.cdr.markForCheck();
     this.chatService.sendMessage(this.referenceId, this.roomType, content);
   }
 

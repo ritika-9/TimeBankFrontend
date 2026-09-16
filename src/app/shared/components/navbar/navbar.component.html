@@ -7,7 +7,13 @@
     <a routerLink="/requests">Requests</a>
     <a routerLink="/sessions">Sessions</a>
     <a routerLink="/profile">Profile</a>
-    <a routerLink="/notifications" class="notif-link">
+    <a routerLink="/my-chats" class="nav-icon-link" title="My Chats">
+      💬
+      <span class="badge-count" *ngIf="activeChatCount > 0">
+        {{activeChatCount}}
+      </span>
+    </a>
+    <a routerLink="/notifications" class="nav-icon-link" title="Notifications">
       🔔
       <span class="badge-count" *ngIf="unreadCount > 0">{{unreadCount}}</span>
     </a>

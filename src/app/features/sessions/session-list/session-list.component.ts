@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -20,7 +20,10 @@ export class SessionListComponent implements OnInit {
   loading = false;
   searchKeyword = '';
 
-  constructor(private sessionService: SessionService) {}
+  constructor(
+    private sessionService: SessionService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadAllSessions();
@@ -30,22 +33,40 @@ export class SessionListComponent implements OnInit {
   loadAllSessions(): void {
     this.loading = true;
     this.sessionService.getAllSessions().subscribe({
-      next: (data) => { this.allSessions = data; this.loading = false; },
-      error: () => this.loading = false
+      next: (data) => {
+        this.allSessions = data;
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
   loadMySessions(): void {
     this.sessionService.getMySessions().subscribe({
-      next: (data) => this.mySessions = data,
-      error: () => {}
+      next: (data) => {
+        this.mySessions = data;
+        this.cdr.markForCheck();
+      },
+      error: () => this.cdr.markForCheck()
     });
   }
 
   search(): void {
     this.loading = true;
     this.sessionService.getAllSessions(this.searchKeyword).subscribe({
-      next: (data) => { this.allSessions = data; this.loading = false; }
+      next: (data) => {
+        this.allSessions = data;
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 }

@@ -75,10 +75,18 @@ export const routes: Routes = [
         .then(m => m.NotificationsComponent)
   },
   {
+  path: 'my-chats',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./features/my-chats/my-chats.component')
+      .then(m => m.MyChatsComponent)
+},
+  {
     path: 'chat',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./features/chat/chat.component').then(m => m.ChatComponent)
   },
-  { path: '**', redirectTo: '/dashboard' }
+  { path: '**', redirectTo: '/dashboard' },
+  
 ];

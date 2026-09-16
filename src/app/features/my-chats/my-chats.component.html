@@ -1,0 +1,71 @@
+<app-navbar></app-navbar>
+<div class="container" style="padding-top: 32px; max-width: 800px;">
+  <div class="page-header">
+    <h1>💬 My Chats</h1>
+    <p>Active conversations from your requests and sessions</p>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading chats...</div>
+
+  <div *ngIf="!loading && totalActiveChats === 0" class="empty-state">
+    <h3>No active chats yet</h3>
+    <p>Chats open when a request is accepted or a session is booked</p>
+    <br/>
+    <a routerLink="/dashboard" class="btn-primary">Browse Feed</a>
+  </div>
+
+  <!-- Active Request Chats -->
+  <div *ngIf="activeRequests.length > 0">
+    <h2 class="section-title">🙋 Help Requests</h2>
+    <div class="chat-card card" *ngFor="let req of activeRequests"
+         (click)="openRequestChat(req)">
+      <div class="chat-avatar request-avatar">🙋</div>
+      <div class="chat-info">
+        <h3>{{req.title}}</h3>
+        <p>
+          <span *ngIf="req.createdByName === currentUserName">
+            Chatting with <strong>{{req.acceptedByName}}</strong>
+          </span>
+          <span *ngIf="req.createdByName !== currentUserName">
+            Helping <strong>{{req.createdByName}}</strong>
+          </span>
+        </p>
+        <span class="skill-tag">{{req.skillName}}</span>
+      </div>
+      <div class="chat-meta">
+        <span class="badge badge-accepted">ACTIVE</span>
+        <span class="chat-arrow">→</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Session Chats -->
+  <div *ngIf="activeSessions.length > 0" style="margin-top: 32px;">
+    <h2 class="section-title">🎓 Sessions</h2>
+    <div class="chat-card card" *ngFor="let session of activeSessions"
+         (click)="openSessionChat(session)">
+      <div class="chat-avatar session-avatar">🎓</div>
+      <div class="chat-info">
+        <h3>{{session.title}}</h3>
+        <p>
+          <span *ngIf="session.offeredByName === currentUserName">
+            Teaching <strong>{{session.bookedByName}}</strong>
+          </span>
+          <span *ngIf="session.offeredByName !== currentUserName">
+            Learning from <strong>{{session.offeredByName}}</strong>
+          </span>
+        </p>
+        <div class="session-meta-row">
+          <span class="skill-tag">{{session.skillName}}</span>
+          <span *ngIf="session.scheduledTime" class="scheduled-time">
+            📅 {{session.scheduledTime | date:'MMM d, h:mm a'}}
+          </span>
+        </div>
+      </div>
+      <div class="chat-meta">
+        <span class="credits-badge">{{session.credits}} credits</span>
+        <span class="chat-arrow">→</span>
+      </div>
+    </div>
+  </div>
+</div>

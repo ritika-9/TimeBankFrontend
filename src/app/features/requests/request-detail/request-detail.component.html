@@ -48,7 +48,12 @@
         ✅ Application sent! Wait for the creator to review.
       </div>
       <div *ngIf="request.status === 'ACCEPTED' && request.acceptedByName === currentUserName">
-        <button class="btn-primary" (click)="goToChat()">💬 Open Chat</button>
+        <a
+          class="btn-primary"
+          routerLink="/chat"
+          [queryParams]="{ type: 'request', id: request.id, with: chatPartnerName }">
+          💬 Open Chat
+        </a>
       </div>
     </div>
 
@@ -57,7 +62,12 @@
       <div *ngIf="request.status === 'ACCEPTED'" class="accepted-banner">
         <span>✅ <strong>{{request.acceptedByName}}</strong> is helping you</span>
         <div class="action-buttons">
-          <button class="btn-primary" (click)="goToChat()">💬 Chat</button>
+          <a
+            class="btn-primary"
+            routerLink="/chat"
+            [queryParams]="{ type: 'request', id: request.id, with: chatPartnerName }">
+            💬 Chat
+          </a>
           <button class="btn-success" (click)="completeRequest()">Mark Complete</button>
         </div>
       </div>

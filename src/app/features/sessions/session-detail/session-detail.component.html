@@ -39,7 +39,7 @@
         <p>📬 <strong>{{session.bookedByName}}</strong> wants to book this session!</p>
         <div class="form-group">
           <label>Confirm a Date & Time</label>
-          <input type="datetime-local" [(ngModel)]="scheduledTime"/>
+          <input type="datetime-local" [(ngModel)]="scheduledTime" />
         </div>
         <button class="btn-primary" (click)="confirmBooking()" [disabled]="loading">
           {{loading ? 'Confirming...' : 'Confirm Booking'}}
@@ -49,7 +49,10 @@
       <div *ngIf="isBooked" class="booked-actions">
         <p>✅ Session booked with <strong>{{session.bookedByName}}</strong></p>
         <div class="action-buttons">
-          <button class="btn-primary" (click)="goToChat()">💬 Open Chat</button>
+          <a class="btn-primary" routerLink="/chat"
+            [queryParams]="{ type: 'session', id: session.id, with: chatPartnerName }">
+            💬 Open Chat
+          </a>
           <button class="btn-success" (click)="completeSession()">Mark Complete</button>
         </div>
       </div>
@@ -60,18 +63,25 @@
     </div>
 
     <!-- STUDENT ACTIONS (not owner) -->
+    <!-- Replace the existing book button section -->
     <div *ngIf="!isOwner" class="actions-section">
       <div *ngIf="session.status === 'AVAILABLE'">
-        <button class="btn-primary large" (click)="bookSession()" [disabled]="booking">
-          {{booking ? 'Sending request...' : '📅 Request to Book'}}
-        </button>
-        <p class="book-note">
-          {{session.credits}} credits will be reserved until the session is confirmed.
-        </p>
+        <div *ngIf="hasRequested" class="already-requested">
+          ✅ You have already requested to book this session.
+          Waiting for confirmation from {{session.offeredByName}}.
+        </div>
+        <div *ngIf="!hasRequested">
+          <button class="btn-primary large" (click)="bookSession()" [disabled]="booking">
+            {{booking ? 'Sending request...' : '📅 Request to Book'}}
+          </button>
+          <p class="book-note">
+            {{session.credits}} credits will be reserved until confirmed.
+          </p>
+        </div>
       </div>
 
-      <div *ngIf="isBooked && session.bookedByName === currentUserName">
-        <p class="booked-msg">✅ You've booked this session!</p>
+      <div *ngIf="isBooked && isStudentBooked">
+        <p class="booked-msg">✅ You have booked this session!</p>
         <button class="btn-primary" (click)="goToChat()">💬 Open Chat</button>
       </div>
 
